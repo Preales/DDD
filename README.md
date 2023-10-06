@@ -30,3 +30,7 @@ Identificar todas las entidades de dominio que sean las raices
 Representa los eventos de dominio, para integrar entre diferentes Agregate
 
 * ValueObject
+
+# Migraciones
+> dotnet ef migrations add InitialMigration -p Infraestructure -s Web.API -o Persistence/Migrations
+> dotnet ef database update -p Infraestructure -s Web.API

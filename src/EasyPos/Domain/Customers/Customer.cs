@@ -14,6 +14,8 @@ public sealed class Customer : AggregateRoot
     public Address Address { get; private set; }
     public bool Active { get; private set; }
 
+    public Customer() { }
+
     public Customer(CustomerId id, string name, string lastName, string email, PhoneNumber phoneNumber, Address address, bool active)
     {
         Id = id;
@@ -24,7 +26,4 @@ public sealed class Customer : AggregateRoot
         Address = address;
         Active = active;
     }
-
-    public Customer() { }
-
 }

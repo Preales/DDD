@@ -3,7 +3,7 @@ using Domain.Customers;
 
 namespace Application.Customers.GetAll;
 
-internal sealed class GetAllCustomersQueryHandler : IRequestHandler<GetAllCustomersQuery, ErrorOr<IReadOnlyList<CustomerResponse>>>
+public sealed class GetAllCustomersQueryHandler : IRequestHandler<GetAllCustomersQuery, ErrorOr<IReadOnlyList<CustomerResponse>>>
 {
     private readonly ICustomerRepository _customerRepository;
 

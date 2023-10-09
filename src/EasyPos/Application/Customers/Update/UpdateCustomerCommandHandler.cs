@@ -1,10 +1,11 @@
 using Domain.Customers;
+using Domain.DomainErrors;
 using Domain.Primitives;
 using Domain.ValueObjects;
 
 namespace Application.Customers.Update;
 
-internal sealed class UpdateCustomerCommandHandler : IRequestHandler<UpdateCustomerCommand, ErrorOr<Unit>>
+public sealed class UpdateCustomerCommandHandler : IRequestHandler<UpdateCustomerCommand, ErrorOr<Unit>>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ICustomerRepository _customerRepository;
@@ -18,14 +19,14 @@ internal sealed class UpdateCustomerCommandHandler : IRequestHandler<UpdateCusto
     public async Task<ErrorOr<Unit>> Handle(UpdateCustomerCommand command, CancellationToken cancellationToken)
     {
         if (!await _customerRepository.ExistsAsync(new CustomerId(command.Id)))
-            return Error.NotFound("Customer.NotFound", "The customer with the provide Id was not found.");
+            return Errors.Customer.CustomerNoFoundById;
 
         if (PhoneNumber.Create(command.PhoneNumber) is not PhoneNumber phoneNumber)
-            return Error.Validation("Customer.PhoneNumber", "Phone number has not valid format.");
+            return Errors.Customer.PhoneNumberWithBadFormat;
 
         if (Address.Create(command.Country, command.Line1, command.Line2, command.City,
                     command.State, command.ZipCode) is not Address address)
-            return Error.Validation("Customer.Address", "Address is not valid.");
+            return Errors.Customer.AddressWithBadFormat;
 
         Customer customer = Customer.UpdateCustomer(command.Id, command.Name,
             command.LastName,

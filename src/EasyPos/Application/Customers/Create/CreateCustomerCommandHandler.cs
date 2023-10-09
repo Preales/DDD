@@ -1,10 +1,11 @@
 using Domain.Customers;
+using Domain.DomainErrors;
 using Domain.Primitives;
 using Domain.ValueObjects;
 
 namespace Application.Customers.Create;
 
-internal sealed class CreateCustomerCommandHandler : IRequestHandler<CreateCustomerCommand, ErrorOr<Unit>>
+public sealed class CreateCustomerCommandHandler : IRequestHandler<CreateCustomerCommand, ErrorOr<Guid>>
 {
     private readonly ICustomerRepository _customerRepository;
     private readonly IUnitOfWork _unitOfWork;
@@ -15,10 +16,10 @@ internal sealed class CreateCustomerCommandHandler : IRequestHandler<CreateCusto
         _unitOfWork = unitOfWork ?? throw new ArgumentException(nameof(_unitOfWork));
     }
 
-    public async Task<ErrorOr<Unit>> Handle(CreateCustomerCommand command, CancellationToken cancellationToken)
+    public async Task<ErrorOr<Guid>> Handle(CreateCustomerCommand command, CancellationToken cancellationToken)
     {
         if (PhoneNumber.Create(command.PhoneNumber) is not PhoneNumber phoneNumber)
-            return Error.Validation("Customer.PhoneNumber", "Phone number has no valid format");
+            return Errors.Customer.PhoneNumberWithBadFormat;
 
         if (Address.Create(
                 command.Country,
@@ -28,7 +29,7 @@ internal sealed class CreateCustomerCommandHandler : IRequestHandler<CreateCusto
                 command.State,
                 command.ZipCode)
             is not Address address)
-            return Error.Validation("Customer.Address", "Address is not valid");
+            return Errors.Customer.AddressWithBadFormat;
 
         var customer = new Customer(
             new CustomerId(Guid.NewGuid()),
@@ -43,6 +44,6 @@ internal sealed class CreateCustomerCommandHandler : IRequestHandler<CreateCusto
         await _customerRepository.AddAsync(customer);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return Unit.Value;
+        return customer.Id.Value;
     }
 }

@@ -1,9 +1,10 @@
 using Application.Customers.Common;
 using Domain.Customers;
+using Domain.DomainErrors;
 
 namespace Application.Customers.GetById;
 
-internal sealed class GetCustomerByIdQueryHandler : IRequestHandler<GetCustomerByIdQuery, ErrorOr<CustomerResponse>>
+public sealed class GetCustomerByIdQueryHandler : IRequestHandler<GetCustomerByIdQuery, ErrorOr<CustomerResponse>>
 {
     private readonly ICustomerRepository _customerRepository;
 
@@ -15,7 +16,7 @@ internal sealed class GetCustomerByIdQueryHandler : IRequestHandler<GetCustomerB
     public async Task<ErrorOr<CustomerResponse>> Handle(GetCustomerByIdQuery query, CancellationToken cancellationToken)
     {
         if (await _customerRepository.GetByIdAsync(new CustomerId(query.Id)) is not Customer customer)
-            return Error.NotFound("Customer.NotFound", "The customer with the provide Id was not found.");
+            return Errors.Customer.CustomerNoFoundById;
 
         return new CustomerResponse(
             customer.Id.Value,

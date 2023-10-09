@@ -1,9 +1,11 @@
-namespace Application.Customers.Create;
-
-public class CreateCustomerCommandValidator : AbstractValidator<CreateCustomerCommand>
+namespace Application.Customers.Update;
+public class UpdateCustomerCommandValidator: AbstractValidator<UpdateCustomerCommand>
 {
-    public CreateCustomerCommandValidator()
+    public UpdateCustomerCommandValidator()
     {
+        RuleFor(r => r.Id)
+            .NotEmpty();
+
         RuleFor(r => r.Name)
             .NotEmpty()
             .MaximumLength(50);
@@ -48,5 +50,8 @@ public class CreateCustomerCommandValidator : AbstractValidator<CreateCustomerCo
             .NotEmpty()
             .MaximumLength(10)
             .WithName("Zip Code");
+
+        RuleFor(r => r.Active)
+            .NotNull();
     }
 }

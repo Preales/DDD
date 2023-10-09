@@ -26,4 +26,9 @@ public sealed class Customer : AggregateRoot
         Address = address;
         Active = active;
     }
+
+    public static Customer UpdateCustomer(Guid id, string name, string lastName, string email, PhoneNumber phoneNumber, Address address, bool active)
+    {
+        return new Customer(new CustomerId(id), name, lastName, email, phoneNumber, address, active);
+    }
 }

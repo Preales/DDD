@@ -1,3 +1,5 @@
+### Este proyecto es basado en la siguiente playlist de [# Curso .NET Clean Architecture](https://www.youtube.com/watch?v=hCG38mYnrMc&list=PLOnQtvVd3KIRVH8jk8mEyGaYD-wua5sXC)
+
 # DDD
 Clean Architecture and DDD
 
